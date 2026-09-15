@@ -292,10 +292,19 @@ Panel {
 
             Row {
               id: heroRow
+              // Never wider than the popup: the date is a fixed 52px while
+              // the popup width scales with the text-size setting
+              // (Style.space) and is capped by the screen, so a long month
+              // ("September 15") on a narrow panel — e.g. MacBook M1 Pro at
+              // base-size 10, or a notch-anchored 500px variant — centered
+              // and clipped both the icon and the day. Constrain the row
+              // and let the date shrink instead of overflowing.
+              width: Math.min(implicitWidth, parent.width)
               anchors.horizontalCenter: parent.horizontalCenter
               spacing: Style.space(22)
 
               Text {
+                id: heroIcon
                 // Baseline-aligned, not center-aligned: "July 26" carries a
                 // descender, so centering the two boxes leaves the icon
                 // sitting visibly low against the digits.
@@ -322,6 +331,13 @@ Panel {
                 font.family: root.contentFontFamily
                 font.pixelSize: 52
                 font.bold: true
+                // Shrink to the space the icon leaves in the row rather
+                // than overflowing the popup; elide only if even the
+                // minimum no longer fits an extremely narrow panel.
+                width: Math.min(implicitWidth, Math.max(0, heroRow.width - heroIcon.implicitWidth - heroRow.spacing))
+                elide: Text.ElideRight
+                fontSizeMode: Text.HorizontalFit
+                minimumPixelSize: 28
               }
             }
 

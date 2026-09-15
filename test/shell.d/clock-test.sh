@@ -213,6 +213,8 @@ assert(/width: Math\.max\(calendarScroll\.width, gridColumn\.width\)/.test(panel
 assert(/enabled: !root\.viewingCurrentMonth/.test(panelSource) && /onClicked: root\.goToToday\(\)/.test(panelSource), 'calendar hero returns to today once the view has stepped away')
 assert(!/clampMonth/.test(panelSource), 'calendar steps freely into future months')
 assert(/Qt\.formatDate\(root\.today, "MMMM d"\)/.test(panelSource), 'calendar hero spells out today')
+assert(/id: heroRow[\s\S]*?width: Math\.min\(implicitWidth, parent\.width\)/.test(panelSource), 'calendar hero row never outgrows the popup, so a long month cannot clip the icon and day')
+assert(/id: heroDate[\s\S]*?fontSizeMode: Text\.HorizontalFit/.test(panelSource) && /id: heroDate[\s\S]*?minimumPixelSize:/.test(panelSource), 'calendar hero date shrinks to fit a narrow popup instead of overflowing')
 assert(/id: yearLabel/.test(panelSource) && /root\.yearDone/.test(panelSource), 'calendar panel shows the year progress bar')
 
 // The memento mori bar is opt-in: double-tapping the year bar asks for an age,
