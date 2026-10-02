@@ -73,9 +73,9 @@ else
   (( new_brightness < 0 )) && new_brightness=0
 fi
 
-# A level chosen by hand, even 0, replaces the one a blank saved for restore.
-rm -f "$state_marker"
-
-# Set the new brightness.
-brightnessctl -d "$device" set "$new_brightness" >/dev/null
+# Set the new brightness. A level chosen by hand, even 0, replaces the one a
+# blank saved for restore.
+if brightnessctl -d "$device" set "$new_brightness" >/dev/null; then
+  rm -f "$state_marker"
+fi
 (( no_osd )) || omarchy-osd -i keyboard -p "$(( new_brightness * 100 / max_brightness ))"
