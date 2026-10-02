@@ -44,12 +44,15 @@ elif [[ $direction == "restore" ]]; then
   if [[ ! -f $state_marker ]]; then
     exit 0
   fi
-  rm -f "$state_marker"
   current_brightness="$(brightnessctl -d "$device" get 2>/dev/null || echo 0)"
-  if (( current_brightness != 0 )); then
-    exit 0
+  if (( current_brightness == 0 )); then
+    brightnessctl -rd "$device" >/dev/null
+    # brightnessctl -r exits 0 even when the write fails, so read back whether it landed.
+    current_brightness="$(brightnessctl -d "$device" get 2>/dev/null || echo 0)"
   fi
-  brightnessctl -rd "$device" >/dev/null || true
+  if (( current_brightness != 0 )); then
+    rm -f "$state_marker"
+  fi
   exit 0
 fi
 
